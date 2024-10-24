@@ -1,3 +1,5 @@
+// Disable the eslint rule for this file or block of code
+/* eslint-disable @typescript-eslint/no-empty-interface */
 import { cn } from "@/lib/utils";
 import { forwardRef } from "react";
 
