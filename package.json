@@ -16,7 +16,8 @@
     "query-string": "^9.1.1",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
-    "tailwind-merge": "^2.5.4"
+    "tailwind-merge": "^2.5.4",
+    "zustand": "^5.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",
