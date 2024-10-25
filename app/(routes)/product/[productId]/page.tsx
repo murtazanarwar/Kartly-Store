@@ -43,3 +43,5 @@ const ProductPage: React.FC<ProductPageProps> = async ({
 }
 
 export default ProductPage;
+
+//TODO: wonder how params is a promise
