@@ -29,6 +29,7 @@ const Summary = () => {
     } , 0 );
 
     const onCheckout = () => {
+        toast("watsapp page's screenshort to me")
         toast("This feature will be avaliable soon...")
         // const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
         //     productIds: items.map((item) => item.id),
