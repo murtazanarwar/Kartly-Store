@@ -1,21 +1,24 @@
 "use client";
 
+import axios from "axios";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useSearchParams } from "next/navigation";
+
 import Button from "@/components/ui/Button";
 import Currency from "@/components/ui/currency";
 import useCart from "@/hooks/use-cart";
-// import axios from "axios";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
-import toast from "react-hot-toast";
+import PhoneNumber from "@/components/ui/phone-input";
 
 const Summary = () => {
     const searchParams = useSearchParams();
     const items = useCart((state) => state.items );
     const removeAll = useCart((state) => state.removeAll);
+    const [phoneNumber, setPhoneNumber ] = useState("");
 
     useEffect(() => {
         if(searchParams.get("success")){
-            toast.success("Payment completed");
+            toast.success("Order Placed");
             removeAll();
         }
 
@@ -28,14 +31,15 @@ const Summary = () => {
         return total + Number(item.price);
     } , 0 );
 
-    const onCheckout = () => {
-        toast("watsapp page's screenshort to me")
-        toast("This feature will be avaliable soon...")
-        // const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
-        //     productIds: items.map((item) => item.id),
-        // });
+    const onCheckout = async () => {
+        // toast("watsapp page's screenshort to me")
+        // toast("This feature will be avaliable soon...")
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
+            productIds: items.map((item) => item.id),
+            phoneNumber: phoneNumber
+        });
 
-        // window.location = response.data.url;
+        window.location = response.data.url;
     }
 
     return (
@@ -49,8 +53,9 @@ const Summary = () => {
                     <Currency value={totalPrice} />
                 </div>
             </div>
+            <PhoneNumber setPhoneNumber={setPhoneNumber} />
             <Button onClick={onCheckout} className="w-full mt-6">
-                Checkout
+                Place Order
             </Button>
         </div>
     )
