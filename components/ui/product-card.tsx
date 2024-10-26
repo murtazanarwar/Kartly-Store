@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import { Expand, ShoppingCart } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { MouseEventHandler } from "react";
 
 import { Product } from "@/types";
 import IconButton from '@/components/ui/icon-button'
 import Currency from "@/components/ui/currency";
-import { useRouter } from "next/navigation";
-import { MouseEventHandler } from "react";
 import usePreviewModal from "@/hooks/use-preview-modal";
+import useCart from "@/hooks/use-cart";
 
 interface ProductCardPros {
     data: Product;
@@ -17,6 +18,7 @@ interface ProductCardPros {
 const ProductCard: React.FC<ProductCardPros> = ({
     data
 }) => {
+    const cart = useCart();
     const router = useRouter();
     const previewModal = usePreviewModal();
 
@@ -27,6 +29,11 @@ const ProductCard: React.FC<ProductCardPros> = ({
     const onPreview: MouseEventHandler<HTMLButtonElement> = (event) => {
         event.stopPropagation();
         previewModal.onOpen(data);
+    }
+
+    const onAddToCart: MouseEventHandler<HTMLButtonElement> = (event) => {
+        event.stopPropagation();
+        cart.addItem(data);
     }
 
     return (
@@ -46,7 +53,7 @@ const ProductCard: React.FC<ProductCardPros> = ({
                         />
                         <IconButton
                             icon={<ShoppingCart size={20} className="text-gray-600"/>}
-                            onClick={() => {}}
+                            onClick={onAddToCart}
                         />
                     </div>
                 </div>
