@@ -12,9 +12,11 @@ import PhoneNumber from "@/components/ui/phone-input";
 
 const Summary = () => {
     const searchParams = useSearchParams();
+
     const items = useCart((state) => state.items );
     const removeAll = useCart((state) => state.removeAll);
     const [phoneNumber, setPhoneNumber ] = useState("");
+    const [loading, setLoading ] = useState(false);
 
     useEffect(() => {
         if(searchParams.get("success")){
@@ -32,14 +34,17 @@ const Summary = () => {
     } , 0 );
 
     const onCheckout = async () => {
-        // toast("watsapp page's screenshort to me")
-        // toast("This feature will be avaliable soon...")
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
-            productIds: items.map((item) => item.id),
-            phoneNumber: phoneNumber
-        });
-
-        window.location = response.data.url;
+        setLoading(true);
+        try {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
+                productIds: items.map((item) => item.id),
+                phoneNumber: phoneNumber
+            });
+    
+            window.location = response.data.url;
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -54,7 +59,7 @@ const Summary = () => {
                 </div>
             </div>
             <PhoneNumber setPhoneNumber={setPhoneNumber} />
-            <Button onClick={onCheckout} className="w-full mt-6">
+            <Button onClick={onCheckout} className="w-full mt-6" disabled={loading || !phoneNumber || (items.length === 0) } >
                 Place Order
             </Button>
         </div>
