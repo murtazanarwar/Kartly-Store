@@ -28,8 +28,13 @@ const Summary = () => {
         return total + Number(item.price);
     } , 0 );
 
-    const onCheckout = async () => {
+    const onCheckout = () => {
         toast("This feature will be avaliable soon...")
+        // const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
+        //     productIds: items.map((item) => item.id),
+        // });
+
+        // window.location = response.data.url;
     }
 
     return (
