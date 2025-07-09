@@ -6,6 +6,7 @@ import Footer from "@/components/footer";
 
 import ModalProvider from "@/providers/modal-provider";
 import ToastProvider from "@/providers/toast-provider";
+import { SocketProvider } from "@/providers/socket-provider";
 
 import "./globals.css";
 
@@ -25,16 +26,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={font.className}
-        
-      >
-        <ModalProvider />
-        <ToastProvider />
-        <Navbar />
-        {children}
-        <Footer />
-      </body>
+      <SocketProvider>
+        <body
+          className={font.className}
+          >
+          <ModalProvider />
+          <ToastProvider />
+          <Navbar />
+          {children}
+          <Footer />
+        </body>
+      </SocketProvider>
     </html>
   );
 }
