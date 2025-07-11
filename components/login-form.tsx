@@ -35,10 +35,10 @@ export function LoginForm({
       const response = await axios.post('/api/log-in', user);
       const userData = response.data.user;
       setGlobalUser(userData);
-      // console.log("Login Response", response.data);
+      console.log("Login Response", response.data);
       router.push('/');
     } catch (error:any) {
-      // console.log("Login failed", error);
+      console.log("Login failed", error);
       toast.error(error.message);
     }finally{
       setLoading(false);

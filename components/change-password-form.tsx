@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/shadcn_button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
 
 export function ChangePasswordForm({
   className,
@@ -20,6 +21,7 @@ export function ChangePasswordForm({
     confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   // Extract token from URL query on mount
   useEffect(() => {
@@ -43,10 +45,10 @@ export function ChangePasswordForm({
         confirmpassword: form.confirmPassword,
       });
       toast.success("Password updated!");
-      // Optionally redirect to login:
-      // router.push('/login-in');
+      router.push('/log-in');
     } catch (err: any) {
       toast.error(err.response?.data?.error || err.message);
+      // toast.error("no man");
     } finally {
       setLoading(false);
     }
@@ -98,7 +100,7 @@ export function ChangePasswordForm({
             </Button>
             <div className="text-center text-sm">
               Remembered your password?{" "}
-              <a href="/login-in" className="underline underline-offset-4">
+              <a href="/log-in" className="underline underline-offset-4">
                 Log in
               </a>
             </div>

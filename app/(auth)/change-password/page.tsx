@@ -1,5 +1,4 @@
 import { ChangePasswordForm } from "@/components/change-password-form"
-import { ForgotPasswordForm } from "@/components/forgot-password-form"
 
 export default function LoginPage() {
   return (

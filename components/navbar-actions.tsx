@@ -20,12 +20,12 @@ const NavbarActions = () => {
 
     const logout = async () => {
         try {
-        axios.get("/api/log-out");
-        clearGlobalUser();
-        toast.success("Logout Successful");
+            axios.get("/api/log-out");
+            clearGlobalUser();
+            toast.success("Logout Successful");
         } catch (error: any) {
-        console.log(error.message);
-        toast.error(error.message);
+            console.log(error.message);
+            toast.error(error.message);
         }
     };
 

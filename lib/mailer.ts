@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import bcryptjs from "bcryptjs";
 import prismadb from "@/lib/prismadb"
+import { Resend } from 'resend';
 
 export const sendEmail = async ({
   email,
@@ -52,7 +53,7 @@ export const sendEmail = async ({
     const url = `${process.env.DOMAIN}/${path}?token=${hashedToken}`;
 
     const mailOptions = {
-      from: "no-reply@yourapp.com",
+      from: "no-reply@householdhub.com",
       to: email,
       subject,
       html: `
@@ -65,6 +66,22 @@ export const sendEmail = async ({
         <p>${url}</p>
       `,
     };
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    resend.emails.send({
+      from: 'onboarding@resend.dev',
+      to: email,
+      subject: 'Hello World',
+      html: `
+        <p>
+          Click <a href="${url}">here</a> to ${
+        emailType === "VERIFY" ? "verify your email" : "reset your password"
+      },
+          or copy & paste the following link into your browser:
+        </p>
+        <p>${url}</p>
+      `,
+    });
 
     // 5) send it
     const mailResponse = await transport.sendMail(mailOptions);

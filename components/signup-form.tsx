@@ -34,8 +34,9 @@ export function SignUpForm({
         }
         const response = await axios.post('/api/sign-up', user);
         toast.success(response.data.message || "User created successfully");
-        router.push('/login-in');
+        router.push('/log-in');
       } catch (error: any) {
+        console.log("Signup failed", error);
         toast.error(error.response?.data?.error || error.message);
       } finally {
         setLoading(false);

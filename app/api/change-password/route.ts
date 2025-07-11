@@ -4,8 +4,7 @@ import prisma from "@/lib/prismadb";
 
 export async function POST(request: NextRequest) {
   try {
-    const { user } = await request.json();
-    const { token, confirmpassword } = user;
+    const { token, confirmpassword } = await request.json();;
 
     // 1) Hash the new password
     const salt = await bcryptjs.genSalt(10);
