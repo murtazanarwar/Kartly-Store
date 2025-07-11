@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Urbanist } from 'next/font/google'
 
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
-
 import ModalProvider from "@/providers/modal-provider";
 import ToastProvider from "@/providers/toast-provider";
 import { SocketProvider } from "@/providers/socket-provider";
@@ -32,9 +29,7 @@ export default function RootLayout({
           >
           <ModalProvider />
           <ToastProvider />
-          <Navbar />
           {children}
-          <Footer />
         </body>
       </SocketProvider>
     </html>
