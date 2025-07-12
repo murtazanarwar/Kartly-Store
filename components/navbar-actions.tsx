@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 import useCart from "@/hooks/use-cart";
 import { useUser } from "@/hooks/use-user";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import toast from "react-hot-toast";
+import { logoutUser } from "@/actions/get-authservice";
  
 const NavbarActions = () => {
     const currentUser = useUser();
@@ -20,7 +20,7 @@ const NavbarActions = () => {
 
     const logout = async () => {
         try {
-            axios.get("/api/log-out");
+            logoutUser()
             clearGlobalUser();
             toast.success("Logout Successful");
         } catch (error: any) {
@@ -61,7 +61,7 @@ const NavbarActions = () => {
                         size={20}
                         color="white"
                     />
-                    <span className="ml-2 text-sm font-medium text-white">
+                    <span className="hidden md:block ml-2 text-sm font-medium text-white">
                         Log In
                     </span>
                 </Button>
@@ -74,7 +74,7 @@ const NavbarActions = () => {
                         size={20}
                         color="white"
                     />
-                    <span className="ml-2 text-sm font-medium text-white">
+                    <span className="hidden md:block ml-2 text-sm font-medium text-white">
                         Log Out
                     </span>
                 </Button>

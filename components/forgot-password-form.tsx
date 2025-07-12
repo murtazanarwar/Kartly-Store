@@ -1,6 +1,5 @@
 "use client";
 
-import axios from "axios";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -9,11 +8,15 @@ import { Button } from "@/components/ui/shadcn_button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { forgotPassword } from "@/actions/get-authservice";
+import { useRouter } from "next/navigation";
+
 
 export function ForgotPasswordForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const router = useRouter();
   const [user, setUser] = useState({
     email: "",
   });
@@ -23,9 +26,10 @@ export function ForgotPasswordForm({
     e.preventDefault();
     try {
         setLoading(true);
-        const response = await axios.post('/api/forgot-password', user);
-        console.log("Forgot Password Response", response.data);
+        const response = await forgotPassword(user);
+        console.log("Forgot Password Response", response);
         toast.success('Email Sent!');
+        router.push('/log-in');
         
     } catch (error:any) {
         console.log("Error Sending Email",error);

@@ -7,10 +7,10 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { FaApple, FaGoogle, FaMeta } from "react-icons/fa6"
-import axios from 'axios';
 import {useRouter} from 'next/navigation';
 import toast from "react-hot-toast";
 import { useUser } from "@/hooks/use-user";
+import { loginUser } from "@/actions/get-authservice";
 
 export function LoginForm({
   className,
@@ -32,10 +32,10 @@ export function LoginForm({
     e.preventDefault();
     try {
       setLoading(true);
-      const response = await axios.post('/api/log-in', user);
-      const userData = response.data.user;
+      const response = await loginUser(user);
+      const userData = response.user;
       setGlobalUser(userData);
-      console.log("Login Response", response.data);
+      // console.log("Login Response", response);
       router.push('/');
     } catch (error:any) {
       console.log("Login failed", error);
@@ -108,15 +108,15 @@ export function LoginForm({
                 </span>
               </div>
               <div className="grid grid-cols-3 gap-4">
-                <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                <Button variant="outline" className="w-full flex items-center justify-center gap-2 cursor-not-allowed">
                   <FaApple className="w-5 h-5" />
                   <span className="sr-only">Login with Apple</span>
                 </Button>
-                <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                <Button variant="outline" className="w-full flex items-center justify-center gap-2 cursor-not-allowed">
                   <FaGoogle className="w-5 h-5" />
                   <span className="sr-only">Login with Google</span>
                 </Button>
-                <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                <Button variant="outline" className="w-full flex items-center justify-center gap-2 cursor-not-allowed">
                   <FaMeta className="w-5 h-5" />
                   <span className="sr-only">Login with Facebook</span>
                 </Button>

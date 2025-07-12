@@ -7,9 +7,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FaApple, FaGoogle, FaMeta } from "react-icons/fa6";
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import toast from "react-hot-toast";
+import { signupUser } from "@/actions/get-authservice";
 
 export function SignUpForm({
   className,
@@ -32,8 +32,8 @@ export function SignUpForm({
           toast.error("Passwords do not match");
           return;
         }
-        const response = await axios.post('/api/sign-up', user);
-        toast.success(response.data.message || "User created successfully");
+        const response = await signupUser(user);
+        toast.success(response.message || "User created successfully");
         router.push('/log-in');
       } catch (error: any) {
         console.log("Signup failed", error);
@@ -118,15 +118,15 @@ export function SignUpForm({
                 </span>
               </div>
               <div className="grid grid-cols-3 gap-4">
-                <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                <Button variant="outline" className="w-full flex items-center justify-center gap-2 cursor-not-allowed">
                   <FaApple className="w-5 h-5" />
                   <span className="sr-only">Sign up with Apple</span>
                 </Button>
-                <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                <Button variant="outline" className="w-full flex items-center justify-center gap-2 cursor-not-allowed">
                   <FaGoogle className="w-5 h-5" />
                   <span className="sr-only">Sign up with Google</span>
                 </Button>
-                <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                <Button variant="outline" className="w-full flex items-center justify-center gap-2 cursor-not-allowed">
                   <FaMeta className="w-5 h-5" />
                   <span className="sr-only">Sign up with Facebook</span>
                 </Button>

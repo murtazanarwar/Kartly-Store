@@ -19,7 +19,6 @@ const ProductPage: React.FC<ProductPageProps> = async ({
     const { productId } = await params;
     
     const product = await getProduct(productId);
-
     const suggestedProduct = await getProducts({
         categoryId: product?.category?.id
     })
@@ -36,6 +35,8 @@ const ProductPage: React.FC<ProductPageProps> = async ({
                     </div>
                     <hr className="my-10" />
                     <ProductList title="Related Items" items={suggestedProduct} />
+                    <hr className="my-10" />
+                    {/* <Review productId={product.id} /> */}
                 </div>
             </Container>
         </div>

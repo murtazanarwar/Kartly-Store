@@ -1,6 +1,5 @@
 "use client";
 
-import axios from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -8,11 +7,14 @@ import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/shadcn_button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
+import { verifyEmail } from "@/actions/get-authservice";
 
 export default function VerifyEmailPage() {
   const [token, setToken] = useState("");
   const [verified, setVerified] = useState(false);
   const [error, setError] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const urlToken = new URLSearchParams(window.location.search).get("token");
@@ -22,9 +24,10 @@ export default function VerifyEmailPage() {
   useEffect(() => {
     const verifyUserEmail = async () => {
       try {
-        await axios.post("/api/verify-email", { token });
+        await verifyEmail({ token });
         setVerified(true);
         toast.success("Email verified successfully!");
+        router.push('/')
       } catch (error: any) {
         setError(true);
         toast.error(error?.response?.data?.error || "Verification failed.");

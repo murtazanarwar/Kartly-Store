@@ -6,7 +6,7 @@ const InputBox = () => {
     return (
         <>
             <form
-                className="relative w-2/3 rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring p-1"
+                className="relative w-full rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring p-1"
             >
                 <ChatInput
                 placeholder="Type your message here..."

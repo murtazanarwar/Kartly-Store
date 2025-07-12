@@ -41,6 +41,12 @@ const Info: React.FC<InfoProps> = ({
                         backgroundColor: data?.color?.value
                     }} />
                 </div>
+                <div className="flex gap-x-4">
+                    <h3 className="font-semibold text-black">Description:</h3>
+                    <div>
+                        {data?.description}
+                    </div>
+                </div>
             </div>
             <div className="mt-10 flex items-center gap-x-3">
                 <Button className="flex items-center gap-x-2" onClick={onAddToCart}>

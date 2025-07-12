@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
 
 import { cn } from "@/lib/utils";
@@ -10,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
+import { changePassword } from "@/actions/get-authservice";
 
 export function ChangePasswordForm({
   className,
@@ -39,7 +39,7 @@ export function ChangePasswordForm({
 
     try {
       setLoading(true);
-      await axios.post("/api/change-password", {
+      await changePassword({
         token: form.token,
         newpassword: form.newPassword,
         confirmpassword: form.confirmPassword,

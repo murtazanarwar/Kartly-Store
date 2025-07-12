@@ -3,7 +3,7 @@ import { ChatMessageList } from "@/components/chat/chat-message-list";
 
 const MessageList = () => {
     return ( 
-        <div className="w-5/6 pb-4 overflow-hidden scrollbar-hide">
+        <div className="w-full pb-4 overflow-hidden scrollbar-hide">
             <ChatMessageList>
             <ChatBubble variant='sent'>
                 <ChatBubbleAvatar fallback='US' />

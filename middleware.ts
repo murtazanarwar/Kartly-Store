@@ -5,17 +5,17 @@ export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const token = request.cookies.get("token")?.value || "";
 
-  if (path === "/support-chat" && !token) {
+  if (path === "/support" && !token) {
     return NextResponse.redirect(new URL("/log-in", request.nextUrl));
   }
 
   // Optional: if logged-in user tries to go to login/signup, redirect to profile
-  const isPublicPath = ["/log-in", "/sign-up", "/verify-email", "/change-password"].includes(path);
+  const isPublicPath = ["/log-in", "/sign-up", "/change-password"].includes(path);
   if (isPublicPath && token) {
     return NextResponse.redirect(new URL("/", request.nextUrl));
   }
 }
 
 export const config = {
-  matcher: ["/support-chat", "/log-in", "/sign-up", "/verify-email", "/change-password"],
+  matcher: ["/support", "/log-in", "/sign-up", "/verify-email", "/change-password"],
 };

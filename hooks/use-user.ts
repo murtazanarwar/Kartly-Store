@@ -15,11 +15,10 @@ export const useUser = create(
         user: null,
         setUser: ( user: User ) => {
             set({ user: user });
-            toast.success("Log In, Sucessfull");
+            toast.success("Log In Sucessfull");
         },
         clearUser: () => {
             set({ user: null });
-            toast.success("Log Out, Sucessfull");
         }
     }), {
         name: "user-storage",
