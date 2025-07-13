@@ -4,6 +4,7 @@ import getProducts from "@/actions/get-products";
 import Gallery from "@/components/gallery/index";
 import Info from "@/components/info";
 import ProductList from "@/components/product-list";
+import Review from "@/components/review";
 import Container from "@/components/ui/container";
 
 interface ProductPageProps {
@@ -16,12 +17,12 @@ interface ProductPageProps {
 const ProductPage: React.FC<ProductPageProps> = async ({
     params
 }) => {
-    const { productId } = await params;
-    
+    const { productId } = await params;    
     const product = await getProduct(productId);
     const suggestedProduct = await getProducts({
         categoryId: product?.category?.id
     })
+
     return (
         <div className="bg-white">
             <Container>
@@ -36,7 +37,7 @@ const ProductPage: React.FC<ProductPageProps> = async ({
                     <hr className="my-10" />
                     <ProductList title="Related Items" items={suggestedProduct} />
                     <hr className="my-10" />
-                    {/* <Review productId={product.id} /> */}
+                    <Review productId={productId} />
                 </div>
             </Container>
         </div>
@@ -44,5 +45,3 @@ const ProductPage: React.FC<ProductPageProps> = async ({
 }
 
 export default ProductPage;
-
-//TODO: wonder how params is a promise

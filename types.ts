@@ -1,5 +1,5 @@
 export interface User {
-    id: number
+    id: string
     name: string
     email: string
 }
@@ -46,3 +46,25 @@ export interface Color {
     value: string
 }
 
+export interface Review {
+  id: string;
+  rating: number
+  comment: string;
+  productId: string;
+  customerId: string;
+  createdAt: string;
+  updatedAt?: string;
+  images?: ReviewImage[];
+  customer?: {
+    id: string;
+    username: string;
+  };
+}
+
+export interface ReviewImage {
+  id: string;
+  reviewId: string;
+  url: string;
+  createdAt: string;
+  updatedAt?: string;
+}

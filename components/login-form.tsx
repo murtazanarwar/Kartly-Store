@@ -34,6 +34,7 @@ export function LoginForm({
       setLoading(true);
       const response = await loginUser(user);
       const userData = response.user;
+      // console.log("user state:",userData);
       setGlobalUser(userData);
       // console.log("Login Response", response);
       router.push('/');
