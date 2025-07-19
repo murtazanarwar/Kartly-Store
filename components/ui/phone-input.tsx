@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 import {
   Form,
@@ -12,43 +12,42 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
   phoneNumber: z
     .string()
     .min(10, { message: "Phone number must be at least 10 characters" })
     .max(15, { message: "Phone number must be at most 15 characters" })
-    .regex(/^\+?\d+$/, { message: "Phone number must contain only digits and may start with a +" })
+    .regex(/^\+?\d+$/, { message: "Phone number must contain only digits and may start with a +" }),
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 interface PhoneNumberProps {
-  setPhoneNumber: (value: string) => void
+  value: string;
+  onChange: (value: string) => void;
 }
 
-const PhoneNumber: React.FC<PhoneNumberProps> = ({ setPhoneNumber }) => {
-  const form = useForm<z.infer<typeof formSchema>>({
+const PhoneNumber: React.FC<PhoneNumberProps> = ({ value, onChange }) => {
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      phoneNumber: "",
-    },
+    defaultValues: { phoneNumber: value },
   });
 
-  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    const result = formSchema.shape.phoneNumber.safeParse(inputValue);
-
-    if (result.success) {
-      setPhoneNumber(inputValue);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    form.setValue("phoneNumber", val);
+    const parsed = formSchema.safeParse({ phoneNumber: val });
+    if (parsed.success) {
+      onChange(val);
     }
-    
-    form.setValue("phoneNumber", inputValue);
   };
 
   return (
     <Form {...form}>
-      <form className="space-y-8 mt-4">
+      <form className="space-y-2">
         <FormField
           control={form.control}
           name="phoneNumber"
@@ -57,13 +56,13 @@ const PhoneNumber: React.FC<PhoneNumberProps> = ({ setPhoneNumber }) => {
               <FormLabel>Phone Number</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Number"
+                  placeholder="e.g. +11234567890"
                   {...field}
-                  onChange={handlePhoneNumberChange}
+                  onChange={handleChange}
                 />
               </FormControl>
               <FormDescription>
-                We will contact you once the order is placed.
+                We may contact you once the order is placed.
               </FormDescription>
               <FormMessage />
             </FormItem>
