@@ -1,6 +1,5 @@
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
-import ContactUsSticky from "@/components/contact-us-sticky";
 
 export default async function SetupLayout({
     children
@@ -11,7 +10,6 @@ export default async function SetupLayout({
         <>
             <Navbar />
             {children}
-            <ContactUsSticky />
             <Footer />
         </>
     )
