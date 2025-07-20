@@ -22,6 +22,7 @@ const NavbarActions = () => {
         try {
             logoutUser()
             clearGlobalUser();
+            router.push("/");
             toast.success("Logout Successful");
         } catch (error: any) {
             console.log(error.message);

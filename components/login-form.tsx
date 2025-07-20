@@ -33,10 +33,10 @@ export function LoginForm({
     try {
       setLoading(true);
       const response = await loginUser(user);
+      // console.log("Login Response", response);
       const userData = response.user;
       // console.log("user state:",userData);
       setGlobalUser(userData);
-      // console.log("Login Response", response);
       router.push('/');
     } catch (error:any) {
       console.log("Login failed", error);

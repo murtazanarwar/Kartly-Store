@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <SocketProvider>
+      {/* <SocketProvider> */}
         <body
           className={font.className}
           >
@@ -31,7 +31,7 @@ export default function RootLayout({
           <ToastProvider />
           {children}
         </body>
-      </SocketProvider>
+      {/* </SocketProvider> */}
     </html>
   );
 }

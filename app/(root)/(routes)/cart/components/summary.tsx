@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import Button from "@/components/ui/Button";
+import { Button as SButton } from "@/components/ui/shadcn_button";
 import Currency from "@/components/ui/currency";
 import { Input } from "@/components/ui/input";
 import {
@@ -29,9 +30,8 @@ const formSchema = z.object({
     .min(10, { message: "Phone number must be at least 10 characters" })
     .max(15, { message: "Phone number must be at most 15 characters" })
     .regex(/^\+?\d+$/, { message: "Phone number must contain only digits and may start with a +" }),
-  address: z
-    .string()
-    .min(5, { message: "Please enter a valid shipping address" }),
+  address: z.string().min(5, { message: "Please enter a valid shipping address" }),
+  couponCode: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -59,28 +59,65 @@ const Summary: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [handled, setHandled] = useState(false);
   const customerId = getCurrentUserId();
-  
+
+  const [discount, setDiscount] = useState<number>(0);
+  const [couponId, setCouponId] = useState<string | null>(null);
+  const [couponLoading, setCouponLoading] = useState<boolean>(false);
+  const [couponApplied, setCouponApplied] = useState<boolean>(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: { phoneNumber: "", address: "" },
+    defaultValues: { phoneNumber: "", address: "", couponCode: "" },
   });
 
   useEffect(() => {
-    if(handled) return;
+    if (handled) return;
 
     if (searchParams.get("success")) {
       toast.success("Order placed successfully!");
       removeAll();
       router.replace(window.location.pathname);
+      setHandled(true);
     }
     if (searchParams.get("canceled")) {
       toast.error("Something went wrong. Please try again.");
       router.replace(window.location.pathname);
+      setHandled(true);
     }
-  }, [searchParams, removeAll, router]);
+  }, [searchParams, removeAll, router, handled]);
 
   const totalPrice = items.reduce((sum, item) => sum + Number(item.price), 0);
+  const finalAmount = totalPrice - discount;
+
+  const handleApplyCoupon = async () => {
+    const code = form.getValues("couponCode");
+    if (!code) {
+      toast.error("Please enter a coupon code.");
+      return;
+    }
+    setCouponLoading(true);
+    try {
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/cart/apply-coupon`,
+        {
+          couponCode: code,
+          customerId,
+          productIds: items.map((item) => item.id),
+        }
+      );
+      const discountInRupees = data.discount;
+      setDiscount(discountInRupees);
+      setCouponId(data.couponId);
+      setCouponApplied(true);
+      toast.success(`Coupon applied! You saved ₹${discountInRupees}`);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.error || "Failed to apply coupon.");
+      setDiscount(0);
+      setCouponApplied(false);
+    } finally {
+      setCouponLoading(false);
+    }
+  };
 
   const onSubmit = form.handleSubmit(async (data) => {
     if (items.length === 0) {
@@ -90,17 +127,17 @@ const Summary: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post(
+      const { data: checkout } = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/checkout`,
         {
           productIds: items.map((item) => item.id),
           phoneNumber: data.phoneNumber,
           address: data.address,
+          discount: discount * 100,
+          couponId,
           customerId,
         }
       );
-
-      const checkout = response.data;
 
       await loadRazorpayScript();
 
@@ -112,7 +149,6 @@ const Summary: React.FC = () => {
         name: "House Holder Hub",
         description: `Order #${checkout.orderId}`,
         handler: () => {
-          // After successful payment, navigate to your status page
           window.location.href = `/cart?success=1`;
         },
         modal: {
@@ -124,7 +160,6 @@ const Summary: React.FC = () => {
 
       // @ts-ignore
       new window.Razorpay(options).open();
-
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Checkout failed.");
     } finally {
@@ -142,6 +177,18 @@ const Summary: React.FC = () => {
           <Currency value={totalPrice} />
         </div>
 
+        {couponApplied && (
+          <div className="flex justify-between items-center text-green-600">
+            <span>Discount</span>
+            <Currency value={-discount} />
+          </div>
+        )}
+
+        <div className="flex justify-between items-center border-b border-gray-200 pb-4">
+          <span className="text-base font-medium text-gray-900">Final Amount</span>
+          <Currency value={finalAmount} />
+        </div>
+
         <Form {...form}>
           <FormField
             control={form.control}
@@ -150,11 +197,9 @@ const Summary: React.FC = () => {
               <FormItem>
                 <FormLabel>Phone Number</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g. 8345678909" {...field} />
+                  <Input placeholder="e.g. +918345678909" {...field} />
                 </FormControl>
-                <FormDescription>
-                  We will contact you once the order is placed.
-                </FormDescription>
+                <FormDescription>We will contact you once the order is placed.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -169,6 +214,29 @@ const Summary: React.FC = () => {
                 <FormControl>
                   <Input placeholder="e.g. 221B Baker Street, London" {...field} />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="couponCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Apply Coupon Code</FormLabel>
+                <div className="flex gap-2">
+                  <FormControl>
+                    <Input placeholder="e.g. SAVE20" {...field} disabled={couponApplied} />
+                  </FormControl>
+                  <SButton
+                    type="button"
+                    onClick={handleApplyCoupon}
+                    disabled={couponLoading || couponApplied || !field.value}
+                  >
+                    {couponLoading ? "Applying..." : couponApplied ? "Applied" : "Apply"}
+                  </SButton>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
