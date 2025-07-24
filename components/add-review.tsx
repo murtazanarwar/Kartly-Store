@@ -67,8 +67,11 @@ const AddReview: React.FC<AddReviewProps> = ({
       setImagesInput("");
       onSuccess?.(newReview);
       setOpen(false);
-    } catch (err: any) {
-      setError(err.message || "Failed to submit review");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message || "Failed to submit review");
+      }
+      console.error("Login failed", err);
     } finally {
       setLoading(false);
     }

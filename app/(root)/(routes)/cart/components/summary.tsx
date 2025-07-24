@@ -24,6 +24,21 @@ import {
 import useCart from "@/hooks/use-cart";
 import { getCurrentUserId } from "@/actions/get-currentuser";
 
+declare global {
+  interface Window {
+    Razorpay: new (opts: {
+      key: string;
+      amount: number;
+      currency: string;
+      order_id: string;
+      name: string;
+      description: string;
+      handler: () => void;
+      modal: { ondismiss: () => void };
+    }) => { open: () => void };
+  }
+}
+
 const formSchema = z.object({
   phoneNumber: z
     .string()
@@ -39,7 +54,7 @@ type FormValues = z.infer<typeof formSchema>;
 function loadRazorpayScript(): Promise<void> {
   return new Promise((resolve, reject) => {
     if (typeof window === "undefined") return reject();
-    if ((window as any).Razorpay) {
+    if (window.Razorpay) {
       return resolve();
     }
     const script = document.createElement("script");
@@ -73,7 +88,7 @@ const Summary: React.FC = () => {
   useEffect(() => {
     setDiscount(0);
     setCouponApplied(false);
-  }, [items])
+  }, [items]);
 
   useEffect(() => {
     if (handled) return;
@@ -112,16 +127,22 @@ const Summary: React.FC = () => {
         {
           couponCode: code,
           customerId,
-          items: cartItem
+          items: cartItem,
         }
       );
-      const discountInRupees = data.discount;
-      setDiscount(discountInRupees);
+
+      setDiscount(data.discount);
       setCouponId(data.couponId);
       setCouponApplied(true);
-      toast.success(`Coupon applied! You saved ₹${discountInRupees}`);
-    } catch (err: any) {
-      toast.error(err?.response?.data?.error || "Failed to apply coupon.");
+      toast.success(`Coupon applied! You saved ₹${data.discount}`);
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response) {
+        toast.error(err.response.data?.error || "Failed to apply coupon.");
+      } else if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("Failed to apply coupon.");
+      }
       setDiscount(0);
       setCouponApplied(false);
     } finally {
@@ -177,10 +198,15 @@ const Summary: React.FC = () => {
         },
       };
 
-      // @ts-ignore
       new window.Razorpay(options).open();
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Checkout failed.");
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response) {
+        toast.error(err.response.data?.message || "Checkout failed.");
+      } else if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("Checkout failed.");
+      }
     } finally {
       setLoading(false);
     }

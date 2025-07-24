@@ -28,16 +28,20 @@ export default function VerifyEmailPage() {
         setVerified(true);
         toast.success("Email verified successfully!");
         router.push('/')
-      } catch (error: any) {
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error.message || "Verification failed.");
+        } else {
+          toast.error("Verification failed.");
+        }
         setError(true);
-        toast.error(error?.response?.data?.error || "Verification failed.");
       }
     };
 
     if (token.length > 0) {
       verifyUserEmail();
     }
-  }, [token]);
+  }, [token, router]);
 
   return (
     <div className={cn("flex flex-col items-center justify-center min-h-screen p-4")}>

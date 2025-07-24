@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Review } from "@/types";
 import updateReview from "@/actions/review/update-review";
 import deleteReview from "@/actions/review/delete-review";
@@ -45,11 +46,6 @@ interface ReviewCardProps {
   onUpdate?: (updated: Review) => void;
   onDelete?: (id: string) => void;
 }
-
-const canModifyReview = (review: Review) => {
-  // TODO: implement permission check
-  return true;
-};
 
 const ReviewCard: React.FC<ReviewCardProps> = ({
   data,
@@ -104,9 +100,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
                 {customer?.username || "Anonymous"}
               </CardTitle>
               
-              {
-                isAuthor
-                ? 
+              {isAuthor && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="px-1">
@@ -124,11 +118,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                : 
-                <>
-                
-                </>
-              }
+              )}
             </div>
 
             <CardDescription className="text-[14px] -mt-2 text-green-600">
@@ -151,11 +141,13 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
         {images && images.length > 0 && (
           <div className="flex gap-1">
             {images.map((img) => (
-              <div key={img.id} className="w-20 h-20 rounded-md overflow-hidden">
-                <img
+              <div key={img.id} className="w-20 h-20 rounded-md overflow-hidden relative">
+                <Image
                   src={img.url}
                   alt="Review Image"
-                  className="object-cover w-full h-full"
+                  fill
+                  className="object-cover"
+                  sizes="80px"
                 />
               </div>
             ))}
@@ -173,8 +165,8 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
             <div>
               <label className="block text-sm font-medium">Rating</label>
               <Select
-              onValueChange={(value) => setNewRating(Number(value))}
-              defaultValue={String(rating)}
+                onValueChange={(value) => setNewRating(Number(value))}
+                defaultValue={String(rating)}
               >
                 <SelectTrigger id="rating" className="w-full">
                   <SelectValue placeholder="Select a rating..." />
@@ -204,9 +196,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
         </DialogContent>
       </Dialog>
 
-      <CardFooter className="pt-2">
-        {/* for Helpful / Yes / No actions */}
-      </CardFooter>
+      <CardFooter className="pt-2" />
     </Card>
   );
 };

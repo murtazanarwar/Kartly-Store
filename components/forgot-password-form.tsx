@@ -30,12 +30,15 @@ export function ForgotPasswordForm({
         console.log("Forgot Password Response", response);
         toast.success('Email Sent!');
         router.push('/log-in');
-        
-    } catch (error:any) {
-        console.log("Error Sending Email",error);
-        toast.error(error.message);
-    }finally{
-        setLoading(false);
+    } catch (err) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("Sending Email failed. Please try again.");
+      }
+      console.log("Error Sending Email",err);
+    } finally {
+      setLoading(false);
     }
   }
 

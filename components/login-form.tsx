@@ -1,59 +1,57 @@
 "use client";
-import React, { useEffect } from "react";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/shadcn_button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { FaApple, FaGoogle, FaMeta } from "react-icons/fa6"
-import {useRouter} from 'next/navigation';
+import React, { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/shadcn_button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { FaApple, FaGoogle, FaMeta } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useUser } from "@/hooks/use-user";
 import { loginUser } from "@/actions/get-authservice";
+import Image from "next/image";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  
   const router = useRouter();
-  const setGlobalUser = useUser((s) => s.setUser); 
-  const [user, setUser] = React.useState({
+  const setGlobalUser = useUser((s) => s.setUser);
+
+  const [user, setUser] = useState({
     email: "",
     password: "",
   });
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const [buttonDisabled, setButtonDisabled] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
+  // Enable button only when both fields are non-empty
+  useEffect(() => {
+    setButtonDisabled(!(user.email.length > 0 && user.password.length > 0));
+  }, [user]);
 
-
-  const onLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onLogin = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
+    setLoading(true);
     try {
-      setLoading(true);
       const response = await loginUser(user);
-      // console.log("Login Response", response);
-      const userData = response.user;
-      // console.log("user state:",userData);
-      setGlobalUser(userData);
-      router.push('/');
-    } catch (error:any) {
-      console.log("Login failed", error);
-      toast.error(error.message);
-    }finally{
+      setGlobalUser(response.user);
+      router.push("/");
+    } catch (err) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("Login failed. Please try again.");
+      }
+      console.error("Login failed", err);
+    } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if(user.email.length > 0 && user.password.length > 0){
-      setButtonDisabled(false);
-    }
-    else{
-      setButtonDisabled(true);
-    }
-  }, [user]);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -67,17 +65,21 @@ export function LoginForm({
                   Login to your account
                 </p>
               </div>
+
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   value={user.email}
-                  onChange={(e) => setUser({ ...user, email: e.target.value })}
+                  onChange={(e) =>
+                    setUser((u) => ({ ...u, email: e.target.value }))
+                  }
                   placeholder="johndoe@example.com"
                   required
                 />
               </div>
+
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
@@ -88,50 +90,66 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input 
-                  id="password" 
-                  type="password" 
+                <Input
+                  id="password"
+                  type="password"
                   value={user.password}
-                  onChange={(e) => setUser({ ...user, password: e.target.value })}
-                  required 
+                  onChange={(e) =>
+                    setUser((u) => ({ ...u, password: e.target.value }))
+                  }
+                  required
                 />
               </div>
-              <Button 
-                type="submit" 
+
+              <Button
+                type="submit"
                 className="w-full"
                 disabled={buttonDisabled || loading}
               >
-                {loading ? "Loging in..." : "Log In"}
+                {loading ? "Logging in..." : "Log In"}
               </Button>
+
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                 <span className="relative z-10 bg-background px-2 text-muted-foreground">
                   Or continue with
                 </span>
               </div>
+
               <div className="grid grid-cols-3 gap-4">
-                <Button variant="outline" className="w-full flex items-center justify-center gap-2 cursor-not-allowed">
+                <Button
+                  variant="outline"
+                  className="w-full flex items-center justify-center gap-2 cursor-not-allowed"
+                >
                   <FaApple className="w-5 h-5" />
                   <span className="sr-only">Login with Apple</span>
                 </Button>
-                <Button variant="outline" className="w-full flex items-center justify-center gap-2 cursor-not-allowed">
+                <Button
+                  variant="outline"
+                  className="w-full flex items-center justify-center gap-2 cursor-not-allowed"
+                >
                   <FaGoogle className="w-5 h-5" />
                   <span className="sr-only">Login with Google</span>
                 </Button>
-                <Button variant="outline" className="w-full flex items-center justify-center gap-2 cursor-not-allowed">
+                <Button
+                  variant="outline"
+                  className="w-full flex items-center justify-center gap-2 cursor-not-allowed"
+                >
                   <FaMeta className="w-5 h-5" />
                   <span className="sr-only">Login with Facebook</span>
                 </Button>
               </div>
+
               <div className="text-center text-sm">
-                Don&apos;t have an account?{' '}
+                Don&apos;t have an account?{" "}
                 <a href="/sign-up" className="underline underline-offset-4">
                   Sign up
                 </a>
               </div>
             </div>
           </form>
+
           <div className="relative hidden bg-muted md:block">
-            <img
+            <Image
               src="/auth-screen/log-in.png"
               alt="Illustration"
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
@@ -139,10 +157,6 @@ export function LoginForm({
           </div>
         </CardContent>
       </Card>
-      {/* <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{' '}
-        and <a href="#">Privacy Policy</a>.
-      </div> */}
     </div>
-  )
+  );
 }

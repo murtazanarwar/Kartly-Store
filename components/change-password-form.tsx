@@ -46,9 +46,13 @@ export function ChangePasswordForm({
       });
       toast.success("Password updated!");
       router.push('/log-in');
-    } catch (err: any) {
-      toast.error(err.response?.data?.error || err.message);
-      // toast.error("no man");
+    } catch (err) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("Password Update failed. Please try again.");
+      }
+      console.error("Password Update failed", err);
     } finally {
       setLoading(false);
     }
