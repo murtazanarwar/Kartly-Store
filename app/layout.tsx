@@ -3,9 +3,9 @@ import { Urbanist } from 'next/font/google'
 
 import ModalProvider from "@/providers/modal-provider";
 import ToastProvider from "@/providers/toast-provider";
-import { SocketProvider } from "@/providers/socket-provider";
 
 import "./globals.css";
+import { StockProvider } from "@/context/stock-context";
 
 const font = Urbanist({
   subsets: ['latin']
@@ -23,15 +23,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* <SocketProvider> */}
         <body
           className={font.className}
           >
-          <ModalProvider />
-          <ToastProvider />
-          {children}
+          <StockProvider>
+            <ModalProvider />
+            <ToastProvider />
+            {children}
+          </StockProvider> 
         </body>
-      {/* </SocketProvider> */}
     </html>
   );
 }

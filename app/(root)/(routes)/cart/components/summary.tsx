@@ -71,6 +71,11 @@ const Summary: React.FC = () => {
   });
 
   useEffect(() => {
+    setDiscount(0);
+    setCouponApplied(false);
+  }, [items])
+
+  useEffect(() => {
     if (handled) return;
 
     if (searchParams.get("success")) {
@@ -86,7 +91,7 @@ const Summary: React.FC = () => {
     }
   }, [searchParams, removeAll, router, handled]);
 
-  const totalPrice = items.reduce((sum, item) => sum + Number(item.price), 0);
+  const totalPrice = items.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0);
   const finalAmount = totalPrice - discount;
 
   const handleApplyCoupon = async () => {
@@ -97,12 +102,17 @@ const Summary: React.FC = () => {
     }
     setCouponLoading(true);
     try {
+      const cartItem = items.map(item => ({
+        productId: item.id,
+        quantity: item.quantity,
+      }));
+
       const { data } = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/cart/apply-coupon`,
         {
           couponCode: code,
           customerId,
-          productIds: items.map((item) => item.id),
+          items: cartItem
         }
       );
       const discountInRupees = data.discount;
@@ -127,10 +137,15 @@ const Summary: React.FC = () => {
 
     setLoading(true);
     try {
+      const cartItem = items.map(item => ({
+        productId: item.id,
+        quantity: item.quantity,
+      }));
+
       const { data: checkout } = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/checkout`,
         {
-          productIds: items.map((item) => item.id),
+          items: cartItem,
           phoneNumber: data.phoneNumber,
           address: data.address,
           discount: discount * 100,
@@ -139,7 +154,11 @@ const Summary: React.FC = () => {
         }
       );
 
-      await loadRazorpayScript();
+      try {
+        await loadRazorpayScript();
+      } catch {
+        throw new Error("Payment gateway unavailable. Please try later.");
+      }
 
       const options = {
         key: checkout.razorpayKey,
