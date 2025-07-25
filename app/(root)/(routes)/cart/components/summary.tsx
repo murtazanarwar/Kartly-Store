@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { z } from "zod";
@@ -72,7 +72,7 @@ const Summary: React.FC = () => {
   const items = useCart((state) => state.items);
   const removeAll = useCart((state) => state.removeAll);
   const [loading, setLoading] = useState<boolean>(false);
-  const [handled, setHandled] = useState(false);
+  const hasHandled = useRef(false);
   const customerId = getCurrentUserId();
 
   const [discount, setDiscount] = useState<number>(0);
@@ -91,20 +91,20 @@ const Summary: React.FC = () => {
   }, [items]);
 
   useEffect(() => {
-    if (handled) return;
+    if (hasHandled.current) return;
 
     if (searchParams.get("success")) {
+      hasHandled.current = true;
       toast.success("Order placed successfully!");
       removeAll();
       router.replace(window.location.pathname);
-      setHandled(true);
     }
     if (searchParams.get("canceled")) {
+      hasHandled.current = true;
       toast.error("Something went wrong. Please try again.");
       router.replace(window.location.pathname);
-      setHandled(true);
     }
-  }, [searchParams, removeAll, router, handled]);
+  }, [searchParams, removeAll, router]);
 
   const totalPrice = items.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0);
   const finalAmount = totalPrice - discount;

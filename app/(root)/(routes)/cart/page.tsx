@@ -4,17 +4,20 @@ import Container from "@/components/ui/container";
 import useCart from "@/hooks/use-cart";
 import CartItem from "./components/cart-item";
 import Summary from "./components/summary";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const CartPage = () => {
     const cart = useCart();
     const router = useRouter();
-
+    const hasRedirected = useRef(false);
     const [isMounted, setIsMounted] = useState(false);
 
     //Comment down when Domain Brought
     useEffect(() => {
+        if (hasRedirected.current) return;
+
         const cookieToken = document.cookie
         .split('; ')
         .find(row => row.startsWith('token='))
@@ -27,6 +30,8 @@ const CartPage = () => {
         const token = cookieToken || storageToken;
 
         if (!token) {
+            hasRedirected.current = true;
+            toast.error("Please log in to access your cart.");
             router.replace('/log-in');
         }
     }, [router]);
