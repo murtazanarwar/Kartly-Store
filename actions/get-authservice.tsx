@@ -1,9 +1,10 @@
+import api from "@/lib/api";
 import axios from "axios";
 const URL = `${process.env.NEXT_PUBLIC_API_URL}/customer/auth`;
 
 export async function me() {
   try {
-    const response = await axios.get(`${URL}/me`);
+    const response = await api.get(`${URL}/me`);
     return response.data;
   } catch (error: any) {
     throw new Error(error?.response?.data?.error || "User Fetching failed");
@@ -12,9 +13,10 @@ export async function me() {
 
 export async function loginUser(user: { email: string; password: string }) {
   try {
-    const response = await axios.post(`${URL}/log-in`, user, {
+    const response = await api.post(`${URL}/log-in`, user, {
         withCredentials: true,
-      });
+    });
+    localStorage.setItem('hhub_token', response.data.token);
     return response.data;
   } catch (error: any) {
     throw new Error(error?.response?.data?.error || "Login failed");
@@ -32,9 +34,10 @@ export async function signupUser(user: { email: string; password: string; userna
 
 export async function logoutUser() {
   try {
-    const response = await axios.get(`${URL}/log-out`, {
+    const response = await api.get(`${URL}/log-out`, {
         withCredentials: true,
-      });
+    });
+    localStorage.removeItem('hhub_token')
     return response.data;
   } catch (error: any) {
     throw new Error(error?.response?.data?.error || "Logout failed");

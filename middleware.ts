@@ -3,7 +3,11 @@ import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  const token = request.cookies.get("token")?.value || "";
+  let token = request.cookies.get("token")?.value || "";
+
+  if (!token && typeof window !== 'undefined') {
+    token = localStorage.getItem('hhub_token') || "";
+  }
 
   if (path === "/cart" && !token) {
     return NextResponse.redirect(new URL("/log-in", request.nextUrl));
