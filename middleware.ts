@@ -3,15 +3,12 @@ import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  let token = request.cookies.get("token")?.value || "";
+  const token = request.cookies.get("token")?.value || "";
 
-  if (!token && typeof window !== 'undefined') {
-    token = localStorage.getItem('hhub_token') || "";
-  }
-
-  if (path === "/cart" && !token) {
-    return NextResponse.redirect(new URL("/log-in", request.nextUrl));
-  }
+  // Uncomment when Domain Brought
+  // if (path === "/cart" && !token) {
+  //   return NextResponse.redirect(new URL("/log-in", request.nextUrl));
+  // }
 
   // Optional: if logged-in user tries to go to login/signup, redirect to profile
   const isPublicPath = ["/log-in", "/sign-up", "/change-password"].includes(path);
@@ -21,5 +18,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/cart", "/log-in", "/sign-up", "/verify-email", "/change-password"],
+  matcher: ["/log-in", "/sign-up", "/verify-email", "/change-password"],
 };

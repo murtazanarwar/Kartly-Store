@@ -5,13 +5,36 @@ import useCart from "@/hooks/use-cart";
 import CartItem from "./components/cart-item";
 import Summary from "./components/summary";
 import { Suspense, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const CartPage = () => {
     const cart = useCart();
+    const router = useRouter();
+
     const [isMounted, setIsMounted] = useState(false);
+
+    //Comment down when Domain Brought
+    useEffect(() => {
+        const cookieToken = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('token='))
+        ?.split('=')[1];
+
+        const storageToken = typeof window !== 'undefined'
+        ? localStorage.getItem('hhub_token')
+        : null;
+
+        const token = cookieToken || storageToken;
+
+        if (!token) {
+            router.replace('/log-in');
+        }
+    }, [router]);
+
     useEffect(() => {
         setIsMounted(true);
     } , []);
+    
     if(!isMounted){
         return null;
     }
