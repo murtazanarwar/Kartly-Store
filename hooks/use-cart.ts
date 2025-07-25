@@ -21,6 +21,10 @@ const useCart = create<CartStore>()(
       items: [],
 
       addItem: (data: Product, quantity: number = 1) => {
+        if(data.stock === 0) {
+            return toast('Product out of stock');
+        }
+
         const currentItems = get().items;
         const existing = currentItems.find(item => item.id === data.id);
 
@@ -68,7 +72,6 @@ const useCart = create<CartStore>()(
 
       removeAll: () => {
         set({ items: [] });
-        toast.success('Cart cleared');
       },
     }),
     {
