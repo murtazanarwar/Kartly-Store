@@ -64,10 +64,10 @@ Here are quick walkthroughs of various features of the Kartly Admin Portal.
 - [▶️ Kartly Store Demo (2:38)](https://youtu.be/kdsemNOGi0M)
 
 ### 🔐 live stock updates
-- [▶️ Kartly Store Demo 2 (1:00)](https://youtu.be/kdsemNOGi0M)
+- [▶️ Kartly Store Demo 2 (1:09)](https://youtu.be/uuRJVtGSRxc)
 
 ### 🔐 Product Filtering
-- [▶️ Kartly Store Demo 3 (0:50)](https://youtu.be/kdsemNOGi0M)
+- [▶️ Kartly Store Demo 3 (0:22)](https://youtu.be/SBZwPNYz3ag)
 
 ## Environment Variables
 
