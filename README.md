@@ -59,8 +59,15 @@ Get started in minutes and delight your customers with a buttery‑smooth shoppi
 
 ## Demo
 
-Insert gif or link to demo
+Here are quick walkthroughs of various features of the Kartly Admin Portal. 
+### 🔐 Authentication and Order Placement
+- [▶️ Kartly Store Demo (2:38)](https://youtu.be/kdsemNOGi0M)
 
+### 🔐 live stock updates
+- [▶️ Kartly Store Demo 2 (2:38)](https://youtu.be/kdsemNOGi0M)
+
+### 🔐 Product Filtering
+- [▶️ Kartly Store Demo (2:38)](https://youtu.be/kdsemNOGi0M)
 
 ## Environment Variables
 
