@@ -46,7 +46,7 @@ Get started in minutes and delight your customers with a buttery‑smooth shoppi
 - 📸 **next-cloudinary** — Seamless image uploads & transformations  
 
 ### Authentication & Payments
-- 🔒 **Custom Auth** (Email/Password + Password Recovery)  
+- 🔒 **Custom Auth** (Email/Password + Email Verification and Password Recovery )  
 - 🌐 **OAuth** (Google, Facebook in progress)  
 - 💳 **Razorpay Checkout** — Indian market payment integration  
 
