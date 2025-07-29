@@ -6,7 +6,7 @@ for quick demo, use the following account:
 | ---------- | ------------------------- | ---------- |
 | Admin User | demo@kartly.com     | demo123  |
 
-Simply sign in at the Clerk-powered login page with these credentials.
+Simply sign in at the login page with these credentials.
 # Project Overview
 
 🛒 Kartly Store Platform combined with Kartly Admin Platform is a full‑featured, lightning‑fast shopping experience built with Next.js and React for indie brands, growing retailers, and developers who crave customizable, real‑time storefronts.
