@@ -4,7 +4,7 @@ for quick demo, use the following account:
 
 | Role       | Email                     | Password   |
 | ---------- | ------------------------- | ---------- |
-| Admin User | demo@kartly.com     | demo123  |
+| Customer | demo@kartly.com     | demo123  |
 
 Simply sign in at the login page with these credentials.
 # Project Overview
