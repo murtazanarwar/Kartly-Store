@@ -3,7 +3,7 @@ const Footer = () => {
         <footer className="bg-white border-t">
             <div className="mx-auto py-10">
                 <p className="text-center text-xs text-black">
-                    &copy; 2024 House Holder Hub, All rights reserved.
+                    &copy; 2025 House Holder Hub, All rights reserved.
                 </p>
             </div>
         </footer>
